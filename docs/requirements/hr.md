@@ -12,10 +12,12 @@ The HR module should cover only the essentials:
 
 * Employee master record
 * Department and designation setup
+* Branch / office setup
 * Attendance
 * Leave management
-* Holiday calendar
+* Holiday calendar (per branch)
 * Employee onboarding and exit
+* Inter-branch transfer
 * Basic document storage
 * Simple HR reports
 * HR dashboard
@@ -29,17 +31,17 @@ The system should stay simple and should not require repeated manual entry for t
 The system should support these basic roles:
 
 * HR Manager
-* HR Officer
+* HR User (can be branch-specific — HR users at one branch see only that branch)
 * Department Manager
 * Employee
 * Management
 
 Permissions should be role-based.
 
-* HR can create and update HR records
-* Managers can approve leave and attendance corrections for their teams
+* HR can create and update HR records (optionally scoped to a specific branch)
+* Managers can approve leave and attendance corrections only for their teams
 * Employees can view their own profile, attendance, leave balance, and requests
-* Management can view summaries and reports
+* Management can view summaries and reports across all branches
 
 ---
 
@@ -53,27 +55,27 @@ Each employee should have one profile with the most important information only.
 * Full Name
 * Department
 * Designation
-* Reporting Manager
 * Joining Date
-* Employment Status
-* Phone Number
 * Email Address
+
+
+
+### Optional Fields
+* Reporting Manager
 * Present Address
+* Phone Number
 * Emergency Contact Name
 * Emergency Contact Phone
 * Photo
-
-### Optional Fields
-
 * Date of Birth
 * Gender
 * National ID / Passport Number
 * Blood Group
 * Marital Status
 * Employee Type
-* Work Location
 * Shift
 * Basic Salary
+* Work Station / Desk Location (if on-site)
 
 The system should allow file attachments for important documents.
 
@@ -85,12 +87,14 @@ The normal HR flow should be simple.
 
 1. HR creates the employee profile
 2. HR collects basic documents
-3. HR assigns department, designation, and manager
+3. HR assigns department, designation, office/branch, and manager
 4. Employee starts attendance tracking
-5. Employee submits leave requests when needed
-6. Manager reviews and approves requests
-7. HR updates employee changes such as transfer, promotion, or resignation
+5. Employee submits leave requests when needed, even create application after taking leave
+6. Manager reviews and approves requests, and HR submits, cancel
+7. HR updates employee changes such as transfer, promotion, inter-branch move, or resignation
 8. HR keeps records for future reference
+
+The system should support inter-branch and inter-office transfers without losing employee history.
 
 The system should keep the history of major changes in the employee profile.
 
@@ -103,9 +107,11 @@ Attendance should support the common cases only.
 ### Attendance Methods
 
 * Manual attendance entry
-* Biometric import
-* Web or mobile check-in if available
+* Biometric import (per branch office)
+* Web or mobile check-in with GPS location capture
 * Work from home attendance
+* IP-based check-in verification for office networks
+
 
 ### Attendance Fields
 
@@ -114,10 +120,10 @@ Attendance should support the common cases only.
 * Check-in Time
 * Check-out Time
 * Working Hours
-* Late Minutes
-* Overtime Hours
+* Actual Working Hours
+* Attendance Method (Biometric, Mobile GPS, Web, Manual, WFH)
 * Status
-* Remarks
+* Remarks (must need in attendance correction)
 
 ### Attendance Actions
 
@@ -172,9 +178,10 @@ The HR team should maintain a holiday list.
 * Holiday Name
 * Date
 * Holiday Type
+* Applicable Branch / Office (all branches or specific branch)
 * Remarks
 
-The system should also support weekly off days.
+The system should also support weekly off days, which may vary by branch or office location.
 
 ---
 
@@ -186,8 +193,9 @@ The system should support a simple employee start and exit process.
 
 * Create employee profile
 * Upload basic documents
-* Assign department and designation
+* Assign department, designation, and branch/office
 * Assign reporting manager
+* Issue office assets (laptop, ID card, access card, etc.) if applicable
 * Mark employee as active
 
 ### Exit
@@ -195,9 +203,19 @@ The system should support a simple employee start and exit process.
 * Record resignation or termination
 * Capture last working date
 * Record reason for exit
+* Collect office assets before final settlement
 * Mark employee as inactive
 
 The employee record should remain in the system after exit.
+
+### Inter-Branch Transfer
+
+* Record transfer from one branch/office to another
+* Capture transfer date and reason
+* Update reporting manager if changed
+* Update shift, work location, and branch-specific settings
+* Keep full history of previous assignments
+* Notify relevant HR teams at both branches
 
 ---
 
@@ -232,6 +250,7 @@ The system should provide the reports HR uses most often.
 * Designation-wise Employee Report
 * Joining Report
 * Attendance Summary Report
+* Monthly Attendance Register (day-by-day attendance per employee for a given month)
 * Late Attendance Report
 * Absent Report
 * Leave Balance Report
@@ -239,15 +258,62 @@ The system should provide the reports HR uses most often.
 * Pending Leave Approval Report
 * Holiday Report
 * Document List Report
+* Expiring Document Report (contracts, visas, and other documents nearing expiry)
 * Exit Report
+* Employee Turnover Report (joinings vs exits over a period)
+* Payroll Register / Salary Register (monthly payroll summary for all employees)
 
-Reports should support filtering by date range, department, designation, employee, and status.
+Reports should support filtering by date range, department, designation, employee, branch/office, and status.
 
 ---
 
 ## 11. Custom Reports
 
 The system should allow simple custom reports without coding when possible.
+
+---
+
+## 12. Payroll
+
+Payroll should be generated monthly based on employee attendance, leave, and salary structure.
+
+### Payroll Components
+
+The system should calculate:
+
+* Basic Salary
+* Allowances
+* Overtime
+* Bonuses
+* Deductions
+* Taxes
+* Provident Fund
+* Net Salary
+
+### Payroll Process
+
+1. HR sets up salary structures for each employee (may vary by branch/location)
+2. System pulls attendance, leave, and overtime data for the month
+3. System calculates earnings and deductions automatically
+4. HR reviews and adjusts if needed
+5. Payroll is finalized and salary slips are generated
+6. Finance processes the payment
+
+The system should support branch-wise payroll processing — each branch can have separate payroll runs if needed.
+
+### Salary Slip
+
+Each salary slip should include:
+
+* Employee Name and ID
+* Department and Designation
+* Pay Period
+* Earnings (Basic, Allowances, Overtime, Bonuses)
+* Deductions (Tax, Provident Fund, Other Deductions)
+* Net Pay
+* Leave Summary for the month
+
+Salary slips should be downloadable as PDF and accessible to employees through self-service.
 
 ### Custom Report Needs
 
@@ -275,10 +341,8 @@ The HR dashboard should show the most important data at a glance.
 
 * Total Employees
 * Active Employees
-* New Joinees This Month
 * Pending Leave Requests
 * Absent Today
-* Late Arrivals Today
 * Upcoming Holidays
 * Documents Expiring Soon
 
@@ -299,7 +363,7 @@ The HR dashboard should show the most important data at a glance.
 * Attendance exceptions
 * Documents expiring soon
 
-The dashboard should update automatically and support basic filters such as date range and department.
+The dashboard should update automatically and support basic filters such as date range, branch/office, and department.
 
 ---
 
