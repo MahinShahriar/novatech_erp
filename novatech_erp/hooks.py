@@ -86,7 +86,7 @@ required_apps = ['frappe', 'erpnext', 'hrms']
 # ------------
 
 # before_install = "novatech_erp.install.before_install"
-# after_install = "novatech_erp.install.after_install"
+after_install = "novatech_erp.novatech_erp.setup.after_install"
 
 # Uninstallation
 # ------------
@@ -138,13 +138,11 @@ required_apps = ['frappe', 'erpnext', 'hrms']
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+	"Leave Application": {
+		"validate": "novatech_erp.novatech_erp.hr.leave_validations.validate",
+	},
+}
 
 # Scheduled Tasks
 # ---------------
